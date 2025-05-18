@@ -1,3 +1,1 @@
-"""
-Services package for the AudioBookRequest application.
-""" 
+"""Services package for AudioBookRequest application.""" 
