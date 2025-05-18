@@ -55,6 +55,11 @@ app.include_router(search.router)
 app.include_router(settings.router)
 app.include_router(wishlist.router)
 
+# Audiobookbay router integration is disabled for now
+# Uncomment the following lines to enable it after fixing any issues
+# from app.routers import audiobookbay
+# app.include_router(audiobookbay.router)
+
 user_exists = False
 
 

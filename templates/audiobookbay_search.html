@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block head %}
+  <title>AudiobookBay Search</title>
+  <script>
+  const onSearch = () => {
+    const search_term = document.querySelector("input").value;
+    document.getElementById("search").disabled = true;
+    document.getElementById("search-text").style.display = "none";
+    document.getElementById("search-spinner").style.display = "inline-block";
+    window.location.href = `/abb?q=${encodeURIComponent(search_term)}`;
+  };
+  const onPageChange = page => {
+    const url = new URL(window.location);
+    url.searchParams.set("page", page);
+    window.location = url;
+  };
+  </script>
+{% endblock head %}
+{% block body %}
+  <div class="w-screen flex flex-col items-center justify-center p-6 sm:p-8 overflow-x-hidden gap-4">
+    <div class="flex w-full justify-between items-center">
+      <h1 class="text-3xl font-bold text-left">AudiobookBay Search</h1>
+      <a preload
+         href="{{ base_url }}/"
+         title="Back to main search"
+         class="btn btn- flex items-center justify-center">
+        Main Search
+        {% include "icons/search.html" %}
+      </a>
+    </div>
+    <div class="flex flex-col gap-4 justify-start items-center">
+      <form class="flex items-start w-full join" onsubmit="onSearch();">
+        <input name="q"
+               class="input join-item flex-1"
+               placeholder="Search AudiobookBay..."
+               {% if not search_term %}autofocus{% endif %}
+               value="{{ search_term }}"
+               spellcheck="false"
+               autocomplete="off" />
+        <button id="search" class="btn btn-primary join-item" type="submit">
+          <span id="search-text">Search</span>
+          <span id="search-spinner" class="loading hidden"></span>
+        </button>
+      </form>
+      {% if error %}
+        <div class="alert alert-error">
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span>{{ error }}</span>
+          </div>
+        </div>
+      {% endif %}
+      {% block book_results %}
+        <div id="book-results"
+             class="min-w-[60vw] max-w-[90vw] sm:max-w-[80vw] h-full grid gap-1 gap-y-2 sm:gap-y-4 sm:gap-2 p-1 grid-flow-row grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
+          {% for book in search_results %}
+            <div class="flex flex-col">
+              <div class="relative w-[8rem] h-[8rem] sm:w-[10rem] sm:h-[10rem] rounded-md overflow-hidden shadow shadow-black items-center justify-center flex">
+                {% if book.cover_url %}
+                  <img class="object-cover w-full h-full hover:scale-110 transition-transform duration-500 ease-in-out"
+                       height="128"
+                       width="128"
+                       src="{{ book.cover_url }}"
+                       alt="{{ book.title }}" />
+                {% else %}
+                  {% include "icons/photo-off.html" %}
+                {% endif %}
+                <a class="absolute top-0 right-0 rounded-none rounded-bl-md btn-sm btn btn-square items-center justify-center flex btn-info"
+                   href="{{ base_url }}/abb/details?url={{ book.detail_page_url | urlencode }}"
+                   title="View details">
+                  <span>{% include "icons/book-open.html" %}</span>
+                </a>
+              </div>
+              <a class="text-sm text-primary font-bold pt-1"
+                 title="View details"
+                 href="{{ base_url }}/abb/details?url={{ book.detail_page_url | urlencode }}">
+                {{ book.title }}
+              </a>
+              <div class="text-xs font-semibold" title="Author">{{ book.author }}</div>
+              {% if book.language %}
+                <div class="text-xs opacity-60">Language: {{ book.language }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endblock book_results %}
+      {% if search_results or page > 1 %}
+        <div class="join">
+          <button class="join-item btn"
+                  onclick="onPageChange('{{ page-1 }}')"
+                  {% if page.__eq__(1) %}disabled{% endif %}>«</button>
+          <button class="join-item btn flex flex-col gap-0"
+                  onclick="onPageChange('{{ 1 }}')"
+                  {% if page.__eq__(1) %}disabled{% endif %}>
+            Page {{ page }}
+            <span class="text-[0.5rem]">back to first</span>
+          </button>
+          <button class="join-item btn" onclick="onPageChange('{{ page+1 }}')">»</button>
+        </div>
+      {% endif %}
+      {% if not search_results %}
+        <div class="pt-8 flex flex-col gap-1 items-center justify-center text-center max-w-[20rem]">
+          {% if search_term and not error %}
+            <span class="text-xl font-semibold">No results found</span>
+            <span class="text-sm">No audiobooks were found on AudiobookBay for your search term.</span>
+          {% elif not error %}
+            <span class="text-xl font-semibold">Search AudiobookBay</span>
+            <span class="text-sm opacity-60">Enter a search term to find audiobooks on AudiobookBay.</span>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock body %} 

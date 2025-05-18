@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block head %}
+  <title>{{ book.title }} - AudiobookBay Details</title>
+{% endblock head %}
+{% block body %}
+  <div class="w-screen flex flex-col items-center justify-center p-6 sm:p-8 overflow-x-hidden gap-4">
+    <div class="flex w-full justify-between items-center">
+      <h1 class="text-2xl md:text-3xl font-bold text-left">AudiobookBay Details</h1>
+      <a preload
+         href="{{ base_url }}/abb?q={{ book.title | urlencode if book else '' }}"
+         title="Back to search"
+         class="btn btn- flex items-center justify-center">
+        Back to Search
+        {% include "icons/arrow-left.html" %}
+      </a>
+    </div>
+
+    {% if error %}
+      <div class="alert alert-error">
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>{{ error }}</span>
+        </div>
+      </div>
+    {% else %}
+      <div class="card lg:card-side bg-base-100 shadow-xl max-w-4xl">
+        <figure class="lg:max-w-sm max-h-96 overflow-hidden">
+          {% if book.cover_url %}
+            <img src="{{ book.cover_url }}" alt="{{ book.title }}" class="object-contain max-h-96"/>
+          {% else %}
+            <div class="w-56 h-64 flex items-center justify-center bg-base-200">
+              {% include "icons/photo-off.html" %}
+            </div>
+          {% endif %}
+        </figure>
+        <div class="card-body">
+          <h2 class="card-title text-2xl">{{ book.title }}</h2>
+          
+          {% if book.author %}
+            <p class="text-lg"><strong>Author:</strong> {{ book.author }}</p>
+          {% endif %}
+          
+          {% if book.narrator %}
+            <p class="text-lg"><strong>Narrator:</strong> {{ book.narrator }}</p>
+          {% endif %}
+          
+          {% if book.language %}
+            <p><strong>Language:</strong> {{ book.language }}</p>
+          {% endif %}
+          
+          {% if book.description %}
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold mb-2">Description</h3>
+              <p class="text-sm overflow-y-auto max-h-48">{{ book.description }}</p>
+            </div>
+          {% endif %}
+
+          <div class="card-actions justify-end mt-4">
+            <form hx-post="{{ base_url }}/abb/download"
+                  hx-target="#download-response"
+                  hx-swap="outerHTML">
+              <input type="hidden" name="detail_url" value="{{ book.detail_page_url }}">
+              <input type="hidden" name="title" value="{{ book.title }}">
+              <input type="hidden" name="author" value="{{ book.author }}">
+              <button class="btn btn-primary" type="submit">
+                {% include "icons/download.html" %}
+                Download
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="download-response"></div>
+    {% endif %}
+  </div>
+{% endblock body %} 

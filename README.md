@@ -16,6 +16,7 @@ If you've heard of Overseer, Ombi, or Jellyseer; this is in the similar vein, <i
   - [Quick Start](#quick-start)
   - [Usage](#usage)
     - [Auto download](#auto-download)
+    - [AudiobookBay Integration](#audiobookbay-integration)
     - [Notifications](#notifications)
       - [Apprise](#apprise)
       - [Gotify](#gotify)
@@ -62,6 +63,16 @@ Auto-downloading enables requests by `Trusted` and `Admin` users to directly sta
    1. Enable `Auto Download` at the top.
    2. The remaining heuristics determine the ranking of any sources retrieved from Prowlarr.
    3. Indexer flags allow you to add priorities to certain sources like freeleeches.
+
+### AudiobookBay Integration
+
+The application includes integration with AudiobookBay for searching and downloading audiobooks directly:
+
+1. Access the AudiobookBay search by clicking the book icon in the navigation bar or by going to `/abb`
+2. Search for audiobooks on AudiobookBay
+3. View details and download audiobooks using qBittorrent
+
+For Docker deployment with qBittorrent integration, see the Docker Compose setup in [AUDIOBOOKBAY_INTEGRATION.md](AUDIOBOOKBAY_INTEGRATION.md).
 
 ### Notifications
 
