@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+python-dotenv # For managing environment variables for configuration
+pydantic # For data validation and settings management
+pydantic-settings # For BaseSettings in Pydantic v2
+
+# For qBittorrent integration (as per plan.md Table 2)
+# python-qbittorrent or qbittorrent-api - we'll choose one later
+qbittorrent-api # Chosen qBittorrent client library
+
+# For scraping (as per plan.md Table 2)
+beautifulsoup4
+# requests # Replaced by httpx for async compatibility with FastAPI
+httpx # modern async http client, good with FastAPI
+# playwright - Removed due to issues with asyncio.create_subprocess_exec on Windows 
